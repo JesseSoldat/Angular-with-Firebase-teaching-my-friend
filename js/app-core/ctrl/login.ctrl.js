@@ -7,14 +7,14 @@ let LoginCtrl = function(LoginService, $state){
 
 
 	//Check for logged in user
-	firebase.auth().onAuthStateChanged(function(user){
-		if(user){
-			$state.go('root.dash');
-		} else {
-			$state.go('login');
+	// firebase.auth().onAuthStateChanged(function(user){
+	// 	if(user){
+	// 		$state.go('root.dash');
+	// 	} else {
+	// 		$state.go('login');
 
-		}
-	})
+	// 	}
+	// })
 
 	function login(user){
 		LoginService.login(user);

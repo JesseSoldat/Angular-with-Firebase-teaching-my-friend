@@ -61,13 +61,14 @@ var LoginCtrl = function LoginCtrl(LoginService, $state) {
 	vm.logout = logout;
 
 	//Check for logged in user
-	firebase.auth().onAuthStateChanged(function (user) {
-		if (user) {
-			$state.go('root.dash');
-		} else {
-			$state.go('login');
-		}
-	});
+	// firebase.auth().onAuthStateChanged(function(user){
+	// 	if(user){
+	// 		$state.go('root.dash');
+	// 	} else {
+	// 		$state.go('login');
+
+	// 	}
+	// })
 
 	function login(user) {
 		LoginService.login(user);
@@ -159,7 +160,13 @@ Object.defineProperty(exports, '__esModule', {
 });
 var EditProfileCtrl = function EditProfileCtrl(ProfileService) {
 	var vm = this;
+
+	vm.addProfile = addProfile;
 	vm.editProfile = editProfile;
+
+	function addProfile(user) {
+		ProfileService.addProfile(user);
+	}
 
 	function editProfile(user) {
 		ProfileService.editProfile(user);
@@ -213,24 +220,39 @@ var _servicesProfileService2 = _interopRequireDefault(_servicesProfileService);
 angular.module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['default']).controller('EditProfileCtrl', _ctrlEditProfileCtrl2['default']).service('ProfileService', _servicesProfileService2['default']);
 
 },{"./ctrl/edit-profile.ctrl":6,"./ctrl/profile.ctrl":7,"./services/profile.service":9}],9:[function(require,module,exports){
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
+Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var ProfileService = function ProfileService() {
+var ProfileService = function ProfileService($firebaseArray) {
 
+  this.addProfile = addProfile;
   this.editProfile = editProfile;
 
-  function editProfile(user) {
+  function addProfile(data) {
+    var user = firebase.auth().currentUser;
+
     console.log(user);
+    var ref = firebase.database().ref('users/' + user.uid + '/profile');
+
+    var userArray = $firebaseArray(ref);
+
+    userArray.$add({
+      email: user.email,
+      id: user.uid,
+      fName: data.fName
+
+    });
   }
+
+  function editProfile(data) {}
 };
 
-ProfileService.$inject = [];
+ProfileService.$inject = ['$firebaseArray'];
 
-exports["default"] = ProfileService;
-module.exports = exports["default"];
+exports['default'] = ProfileService;
+module.exports = exports['default'];
 
 },{}],10:[function(require,module,exports){
 'use strict';

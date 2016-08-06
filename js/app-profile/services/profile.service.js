@@ -1,8 +1,15 @@
 let ProfileService = function($firebaseArray){
 
-
+	this.getProfile = getProfile;
  	this.addProfile = addProfile;
  	this.editProfile = editProfile;
+
+ 	function getProfile(user) {
+ 		let ref = firebase.database().ref('users/' + user.uid);
+ 		let array = $firebaseArray(ref);
+
+ 		return array;
+ 	}
 
  	function addProfile(data){
  		let user = firebase.auth().currentUser;
@@ -24,6 +31,18 @@ let ProfileService = function($firebaseArray){
  	}
 
  	function editProfile(data){
+ 		console.log(data);
+ 		let user = firebase.auth().currentUser;
+ 		console.log(user);
+ 		let ref = firebase.database().ref('users/' + user.uid );
+
+ 		let array = $firebaseArray(ref);
+
+ 		setTimeout(function(){
+ 			let item = array.$getRecord(data.$id)
+ 			console.log(item);
+ 		}, 500);
+
 
  	}
 };

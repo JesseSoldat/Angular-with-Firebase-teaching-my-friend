@@ -4,6 +4,17 @@ let EditProfileCtrl = function(ProfileService){
 	vm.addProfile = addProfile;
 	vm.editProfile = editProfile;
 
+	let currentUser
+
+	firebase.auth().onAuthStateChanged(function(user){
+		if(user) {
+			currentUser = ProfileService.getProfile(user);
+			vm.data = currentUser;
+		} else {
+			vm.noUser = true;
+		}
+	})
+
 	function addProfile(user){
 		ProfileService.addProfile(user);
 	}

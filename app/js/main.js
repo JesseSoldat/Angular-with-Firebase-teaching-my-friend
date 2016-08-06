@@ -164,6 +164,17 @@ var EditProfileCtrl = function EditProfileCtrl(ProfileService) {
 	vm.addProfile = addProfile;
 	vm.editProfile = editProfile;
 
+	var currentUser = undefined;
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			currentUser = ProfileService.getProfile(user);
+			vm.data = currentUser;
+		} else {
+			vm.noUser = true;
+		}
+	});
+
 	function addProfile(user) {
 		ProfileService.addProfile(user);
 	}
@@ -183,17 +194,28 @@ module.exports = exports['default'];
 Object.defineProperty(exports, '__esModule', {
 	value: true
 });
-var ProfileCtrl = function ProfileCtrl($state) {
+var ProfileCtrl = function ProfileCtrl($state, ProfileService) {
 
 	var vm = this;
 
 	vm.editProfile = editProfile;
 
+	var currentUser = undefined;
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			currentUser = ProfileService.getProfile(user);
+			vm.data = currentUser;
+
+			console.log(currentUser);
+		}
+	});
+
 	function editProfile() {
 		$state.go('root.edit-profile');
 	}
 };
-ProfileCtrl.$inject = ['$state'];
+ProfileCtrl.$inject = ['$state', 'ProfileService'];
 exports['default'] = ProfileCtrl;
 module.exports = exports['default'];
 
@@ -227,8 +249,16 @@ Object.defineProperty(exports, '__esModule', {
 });
 var ProfileService = function ProfileService($firebaseArray) {
 
+  this.getProfile = getProfile;
   this.addProfile = addProfile;
   this.editProfile = editProfile;
+
+  function getProfile(user) {
+    var ref = firebase.database().ref('users/' + user.uid);
+    var array = $firebaseArray(ref);
+
+    return array;
+  }
 
   function addProfile(data) {
     var user = firebase.auth().currentUser;
@@ -246,7 +276,19 @@ var ProfileService = function ProfileService($firebaseArray) {
     });
   }
 
-  function editProfile(data) {}
+  function editProfile(data) {
+    console.log(data);
+    var user = firebase.auth().currentUser;
+    console.log(user);
+    var ref = firebase.database().ref('users/' + user.uid);
+
+    var array = $firebaseArray(ref);
+
+    setTimeout(function () {
+      var item = array.$getRecord(data.$id);
+      console.log(item);
+    }, 500);
+  }
 };
 
 ProfileService.$inject = ['$firebaseArray'];

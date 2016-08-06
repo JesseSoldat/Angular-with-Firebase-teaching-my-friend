@@ -12,7 +12,7 @@ let ProfileCtrl = function($state, ProfileService){
 			currentUser = ProfileService.getProfile(user);
 			vm.data = currentUser;
 
-			console.log(currentUser);
+			console.log(vm.data);
 		}
 	})
 

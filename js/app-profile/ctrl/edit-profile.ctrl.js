@@ -9,7 +9,10 @@ let EditProfileCtrl = function(ProfileService){
 	firebase.auth().onAuthStateChanged(function(user){
 		if(user) {
 			currentUser = ProfileService.getProfile(user);
-			vm.data = currentUser;
+
+			vm.user = currentUser;
+			console.log(vm.user);
+
 		} else {
 			vm.noUser = true;
 		}

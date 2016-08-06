@@ -169,7 +169,9 @@ var EditProfileCtrl = function EditProfileCtrl(ProfileService) {
 	firebase.auth().onAuthStateChanged(function (user) {
 		if (user) {
 			currentUser = ProfileService.getProfile(user);
-			vm.data = currentUser;
+
+			vm.user = currentUser;
+			console.log(vm.user);
 		} else {
 			vm.noUser = true;
 		}
@@ -207,7 +209,7 @@ var ProfileCtrl = function ProfileCtrl($state, ProfileService) {
 			currentUser = ProfileService.getProfile(user);
 			vm.data = currentUser;
 
-			console.log(currentUser);
+			console.log(vm.data);
 		}
 	});
 
@@ -247,14 +249,14 @@ angular.module('app.profile', []).controller('ProfileCtrl', _ctrlProfileCtrl2['d
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
-var ProfileService = function ProfileService($firebaseArray) {
+var ProfileService = function ProfileService($firebaseArray, $state) {
 
   this.getProfile = getProfile;
   this.addProfile = addProfile;
   this.editProfile = editProfile;
 
   function getProfile(user) {
-    var ref = firebase.database().ref('users/' + user.uid);
+    var ref = firebase.database().ref('users/' + user.uid + '/profile');
     var array = $firebaseArray(ref);
 
     return array;
@@ -277,21 +279,28 @@ var ProfileService = function ProfileService($firebaseArray) {
   }
 
   function editProfile(data) {
-    console.log(data);
+    // console.log(data);
     var user = firebase.auth().currentUser;
     console.log(user);
-    var ref = firebase.database().ref('users/' + user.uid);
+    var ref = firebase.database().ref('users/' + user.uid + '/profile');
 
     var array = $firebaseArray(ref);
+    var _$id = data.$id;
+    console.log(_$id);
 
     setTimeout(function () {
-      var item = array.$getRecord(data.$id);
+      var item = array.$getRecord(_$id);
       console.log(item);
+
+      item.fName = data.fName;
+      array.$save(item).then(function () {
+        $state.go('root.profile');
+      });
     }, 500);
   }
 };
 
-ProfileService.$inject = ['$firebaseArray'];
+ProfileService.$inject = ['$firebaseArray', '$state'];
 
 exports['default'] = ProfileService;
 module.exports = exports['default'];

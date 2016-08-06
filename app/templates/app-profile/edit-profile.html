@@ -1,5 +1,12 @@
 <div>
 	<h3>Add a Profile</h3>
+
+	<!-- This is an option -->
+	<!-- <h3>{{vm.user[0].fName}}</h3>
+	<input type="text" placeholder="First Name" required ng-model="vm.user[0].fName"> -->
+
+
+
 	<form ng-submit="vm.addProfile(user)">
 		<input type="text" placeholder="First Name" required ng-model="user.fName">
 		<!-- <input type="text" placeholder="Last Name" required ng-model="user.lName">
@@ -16,8 +23,8 @@
 
 <div>
 	<h3>Edit your Profile</h3>
-	<form ng-submit="vm.editProfile(user)">
-		<input type="text" placeholder="First Name" required ng-model="user.fName">
+	<form ng-submit="vm.editProfile(u)" ng-repeat="u in vm.user">
+		<input type="text" placeholder="First Name" required ng-model="u.fName">
 		<!-- <input type="text" placeholder="Last Name" required ng-model="user.lName">
 		<input type="text" placeholder="Street Address" required ng-model="user.address">
 		<input type="text" placeholder="City" required ng-model="user.city">
